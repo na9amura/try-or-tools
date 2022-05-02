@@ -3,3 +3,13 @@ wheel~=0.36.2
 setuptools~=57.0.0
 
 ortools~=9.3.10497
+
+tornado~=6.1
+six~=1.16.0
+numpy~=1.22.3
+pytz~=2022.1
+future~=0.18.2
+cffi~=1.15.0
+ipython~=8.2.0
+pandas~=1.4.2
+PuLP~=2.6.0
