@@ -6,15 +6,21 @@ import string
 class Problem:
     df: pd.DataFrame
     len_groups: int
+    prev_group_mates = dict()
     M: list[int]
     G: list[int]
     MG: list[(int, int)]
     X: pulp.LpVariable.dicts
 
-    def __init__(self, file: string, members_per_group: int = 3):
+    def __init__(self, file: string, *, members_per_group=3, prev_group=pd.DataFrame([])):
         self.df = pd.read_csv(file)
         len_members = len(self.df)
         self.len_groups = int(len_members / members_per_group)
+
+        for g, data in prev_group.groupby('group'):
+            members = data['ID'].to_list()
+            for name in members:
+                self.prev_group_mates[name] = members
 
     def run(self, ) -> pd.DataFrame:
         problem = self.__create_problem()
@@ -47,5 +53,10 @@ class Problem:
         swe = self.df[self.df['SwE'] == 1]['ID'].tolist()
         for g in self.G:
             problem += pulp.lpSum(self.X[m, g] for m in swe) <= 2
+
+        # 4. Avoid previous group members
+        for n, members in self.prev_group_mates.items():
+            for g in self.G:
+                problem += pulp.lpSum(self.X[m, g] for m in members) <= 2
 
         return problem
