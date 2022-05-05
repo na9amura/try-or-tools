@@ -1,4 +1,6 @@
 import argparse
+import sys
+
 import pulp
 
 from solver import create_lp_problem
@@ -20,6 +22,12 @@ if __name__ == '__main__':
         client_secret=args.secret,
         sheet_key=args.sheet_key,
         rosters_sheet_id=args.rosters_sheet_id)
+
+    name = args.name
+    res = sheet.sheet_exists(name)
+    if res:
+        sys.exit(f"Sheet '{name}' already exists")
+
     rosters = sheet.read_rosters()
     problem = create_lp_problem(rosters)
     status, result = problem.run()
@@ -28,4 +36,4 @@ if __name__ == '__main__':
 
     rosters['Group'] = rosters['ID'].map(result)
     data = [[row.ID, row.Name, row.Group] for row in rosters.itertuples()]
-    sheet.write(data, args.name)
+    sheet.write(data, name)

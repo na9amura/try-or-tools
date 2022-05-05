@@ -11,9 +11,12 @@ class Spreadsheet:
         self.sheets = sheets
         self.rosters = rosters
 
-    def check_sheet(self, name: str) -> bool:
-        sheet = self.sheets.worksheet(name)
-        return False if sheet else True
+    def sheet_exists(self, name: str) -> bool:
+        try:
+            self.sheets.worksheet(name)
+        except gspread.exceptions.WorksheetNotFound:
+            return False
+        return True
 
     def read_rosters(self) -> pd.DataFrame:
         rosters = self.rosters
