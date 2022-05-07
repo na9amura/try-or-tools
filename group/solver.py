@@ -11,11 +11,12 @@ class Problem:
     swe_list: list[int]
     X: pulp.LpVariable.dicts
 
-    def __init__(self, members: list[int], groups: list[int], swe_list: list[int]):
+    def __init__(self, members: list[int], groups: list[int], swe_list: list[int], prev_group_mates: dict):
         self.M = members
         self.G = groups
         self.MG = [(m, g) for m in members for g in groups]
         self.swe_list = swe_list
+        self.prev_group_mates = prev_group_mates
 
     def run(self) -> (pulp.LpStatus, dict):
         problem = self.__create_problem()
@@ -66,4 +67,4 @@ def create_lp_problem(df, *, members_per_group=3, prev_group=pd.DataFrame([])) -
             for name in members:
                 prev_group_mates[name] = members
 
-    return Problem(members, groups, swe_list)
+    return Problem(members, groups, swe_list, prev_group_mates)
