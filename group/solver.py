@@ -63,8 +63,8 @@ def create_lp_problem(df, *, members_per_group=3, prev_group=pd.DataFrame([])) -
     prev_group_mates = dict()
     if len(prev_group) > 0:
         for g, data in prev_group.groupby('Group'):
-            members = data['ID'].to_list()
+            _members = data['ID'].to_list()
             for name in members:
-                prev_group_mates[name] = members
+                prev_group_mates[name] = _members
 
     return Problem(members, groups, swe_list, prev_group_mates)
